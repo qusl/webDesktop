@@ -1,0 +1,51 @@
+﻿ .x-default-shortcut {
+    background-image : url(../icon/default.png);
+} 
+
+.x-login-shortcut {
+    background-image : url(../icon/login.png);
+} 
+
+.x-myNewWords-shortcut {
+    background-image : url(../icon/myNewWords.png);
+} 
+
+.x-addNewWords-shortcut {
+    background-image : url(../icon/addNewWords.png);
+} 
+
+.x-exam-shortcut {
+    background-image : url(../icon/exam.png);
+} 
+
+.x-examResultToday-shortcut {
+    background-image : url(../icon/examResultToday.png);
+} 
+
+.x-examResultYesterday-shortcut {
+    background-image : url(../icon/examResultYesterday.png);
+} 
+  
+.x-grid-shortcut {
+    background-image : url(../icon/grid48x48.png);
+} 
+
+.x-im-shortcut {
+    background-image : url(../icon/im48x48.gif);
+}
+
+.x-notepad-shortcut {
+    background-image : url(../icon/notepadLarge.png);
+}
+
+.x-status-shortcut {
+    background-image : url(../icon/statusLarge.png);
+}
+
+.x-bold-text .x-btn-inner{
+    font-weight: bold !important;
+}
+
+.x-long-label{
+    height:auto !important;
+}

@@ -1,0 +1,63 @@
+﻿
+@(
+Html.X().DesktopModuleProxy()
+        .Module(
+            Html.X().DesktopModule()
+                .ModuleID("login-win")
+                .AutoRun(true)           
+                .Shortcut(
+                    Html.X().DesktopShortcut()
+                        .Name("Login")
+                        .IconCls("x-login-shortcut")
+                        .SortIndex(107)                  
+                )
+        .Window(
+          Html.X().Window()
+            .CloseAction(CloseAction.Destroy)
+            .Resizable(false)
+            .Height(150)
+            .Icon(Icon.Lock)
+            .Title("Login")
+            .Width(350)
+            .Modal(true)
+            .BodyPadding(5)
+            .Layout(LayoutType.Fit)
+            .Items(
+                Html.X().FormPanel()
+                    .Layout(LayoutType.Form)
+                    .Border(false)
+                    .BodyStyle("background-color:transparent;")
+                    .Items(
+                        Html.X().TextField()
+                            .ID("txtUserID")
+                            .FieldLabel("UserEmail")
+                            .AllowBlank(false)
+                            .BlankText("Your email is required.")
+                            .Text(ViewBag.UserEmail),
+
+                        Html.X().TextField()
+                            .ID("txtPassword")
+                            .InputType(Ext.Net.InputType.Password)
+                            .FieldLabel("Password")
+                            .AllowBlank(false)
+                            .BlankText("Your password is required.")
+                            .Text("")
+                    )
+            )
+            .Buttons(
+                Html.X().Button()
+                   .Text("Login")
+                   .Icon(Icon.Accept)
+                   .DirectEvents(de =>
+                   {
+                       de.Click.Action = "Login";
+                       de.Click.Success = "this.up('window').close();";
+                       de.Click.EventMask.ShowMask = true;
+                       de.Click.EventMask.Msg = "Verifying...";
+                       de.Click.EventMask.MinDelay = 1000;
+                       de.Click.FormID = "#(return this.up('window').down('form');)";
+                   })
+            )
+            )
+            )
+)

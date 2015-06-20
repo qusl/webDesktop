@@ -1,0 +1,50 @@
+﻿
+@(
+ Html.X().DesktopModuleProxy()
+        .Module(
+            Html.X().DesktopModule()
+                .ModuleID("exam-win")
+                .Shortcut(
+                    Html.X().DesktopShortcut()
+                        .Name("Exam")
+                            .IconCls("x-exam-shortcut")
+                        .SortIndex(111)
+                )
+                .Window(
+                    Html.X().Window()
+                             .Title("Exam")
+                             .Icon(Icon.Rainbow)
+                             .Height(320)
+                             .Width(520)
+                            .DefaultButton("ButtonExam1")
+                            .Layout("fit")
+                            .Items(                            
+                                    Html.X().Panel()
+                                            .Width(350)
+                                            .BodyPadding(5)
+                                            .Frame(true)
+                                            .Layout(LayoutType.Form)
+                                            .Items(
+                                                        Html.X().TextArea().ID("txtMeaning").FieldLabel("Meaning").ReadOnly(true).Height(90).Text(ViewBag.RandomMeaning),
+                                                        Html.X().TextArea().ID("txtNote").FieldLabel("Note").ReadOnly(true).Text(ViewBag.Note),
+                                                        Html.X().TextField().ID("txtWord").FieldLabel("Word").AllowBlank(false),
+                                                        Html.X().Label().ID("LabelResult").Html("</br>Please Click 'New Exam' to start"),
+                                                        Html.X().TextField().ID("txtRealWord").Hidden(true).Text(""),
+                                                        Html.X().TextField().ID("txtID").Hidden(true).Text("0")
+                                            )
+                                            .Buttons(
+                                                Html.X().Button()
+                                                    .Text("New Exam")
+                                                    .Icon(Icon.New)
+                                                    .Handler("#{DirectMethods}.NewExam();"),
+
+                                                Html.X().Button()
+                                                    .Text("Submit")
+                                                    .Icon(Icon.Lightning)
+                                                    .Handler("#{DirectMethods}.ExamAction(App.txtWord.getValue(), App.txtRealWord.getValue(), App.txtID.getValue());")
+                                            )
+        
+                             )         // end of 'Window -> Items'
+                 )                     // end of 'Window'
+          )                            // end of 'Module'
+)

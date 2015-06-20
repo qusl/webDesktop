@@ -1,0 +1,222 @@
+﻿@{
+    Layout = "~/Views/Shared/_BaseLayout.cshtml";
+}
+
+
+@section headtag
+{
+    <link href="/Content/css/desktop.css" rel="stylesheet" />
+    <script>
+        var refresh = function () {
+            window.location.reload();
+        };
+
+        var tile = function () {
+            Ext.net.Desktop.desktop.tileWindows();
+        };
+
+        var cascade = function () {
+            Ext.net.Desktop.desktop.cascadeWindows();
+        };
+    </script>
+}
+
+
+@section example
+{
+    @(
+ Html.X().Desktop()
+            .ID("Desktop1")
+            .Listeners(l =>
+            {
+                l.Ready.BroadcastOnBus = "App.Desktop.ready";
+            })
+            .Modules(
+                    Html.X().DesktopModule()
+                        .ModuleID("examResultToday")
+                        .Shortcut(
+                            Html.X().DesktopShortcut()
+                                .Name("Result Today")
+                                .IconCls("x-examResultToday-shortcut")
+                                .SortIndex(222)
+                        )
+                        .Launcher(
+                            Html.X().MenuItem()
+                                .Text("Result Today")
+                                .Icon(Icon.ApplicationForm)
+                        )
+                        .Window(
+                            Html.X().Window()
+                                .Title("Exam Result Today" + " - " + ViewBag.UserID)
+                                .Width(690)
+                                .Height(500)
+                                .Icon(Icon.ApplicationForm)
+                                .AnimCollapse(false)
+                                .Border(false)
+                                .HideMode(HideMode.Offsets)
+                                .Layout(LayoutType.Fit)
+                                .CloseAction(CloseAction.Destroy)
+                                .Items(
+                                    Html.X().HtmlEditor()
+                                            .Text(ViewBag.ExamResultToday)
+                                )
+                           ),          // end of exam result Today
+
+                        Html.X().DesktopModule()
+                        .ModuleID("examResultYesterday")
+                        .Shortcut(
+                            Html.X().DesktopShortcut()
+                                .Name("Result Yesterday")
+                                .IconCls("x-examResultYesterday-shortcut")
+                                .SortIndex(223)
+                        )
+                        .Launcher(
+                            Html.X().MenuItem()
+                                .Text("Result Yesterday")
+                                .Icon(Icon.ApplicationForm)
+                        )
+                        .Window(
+                            Html.X().Window()
+                                .Title("Exam Result Yesterday" + " - " + ViewBag.UserID)
+                                .Width(690)
+                                .Height(500)
+                                .Icon(Icon.ApplicationForm)
+                                .AnimCollapse(false)
+                                .Border(false)
+                                .HideMode(HideMode.Offsets)
+                                .Layout(LayoutType.Fit)
+                                .CloseAction(CloseAction.Destroy)
+                                .Items(
+                                    Html.X().HtmlEditor()
+                                    .Text(ViewBag.ExamResultYesterday)
+                                )
+                           )          // end of exam result Yesterday
+    )
+
+            .DesktopConfig(
+                Html.X().DesktopConfig()
+                    .Wallpaper("~/Content/wallpapers/blue_beach.jpg")
+                    .ShortcutDragSelector(true)
+                    .ShortcutDefaults(defaults =>
+                    {
+                        defaults.IconCls = "x-default-shortcut";
+                    })
+                    .ContextMenu(
+                        Html.X().Menu()
+                            .Items(
+                                    Html.X().MenuItem().Text("Refresh").Handler("refresh"),
+                                    Html.X().MenuSeparator(),
+                                    Html.X().MenuItem().Text("Title").Handler("tile").Icon(Icon.ApplicationTileVertical),
+                                    Html.X().MenuItem().Text("Cascade").Handler("cascade").Icon(Icon.ApplicationCascade)
+                             )
+                    )
+                    .Content(
+                    @<text>
+                        @(
+                            Html.X().DisplayField()
+                            .Text(ViewBag.UserID)
+                                .FieldStyle("color:white;font-size:16px;")
+                                .StyleSpec("position:absolute;right:40px;top:25px;")
+                        )      
+
+    
+                    </text>
+                     )
+                )
+
+                .StartMenu(
+                    Html.X().DesktopStartMenu()
+                        .Title("My Web Desktop")
+                        .Icon(Icon.Application)
+                        .Height(300)
+                        .ToolConfig(
+                            Html.X().Toolbar()
+                                .Width(100)
+                                .Items(
+                                                        
+                                       
+                                    Html.X().Button()
+                                        .Text("Logout")
+                                        .Icon(Icon.Key)
+                                        .DirectEvents(de =>
+                                        {
+                                            de.Click.Action = "Logout";
+                                            de.Click.EventMask.ShowMask = true;
+                                            de.Click.EventMask.Msg = "Going Back To Public Desktop...";
+                                            de.Click.EventMask.MinDelay = 1000;
+                                        })
+                                )
+                        )
+                )
+                .TaskBar(
+                    Html.X().DesktopTaskBar()
+                        .TrayWidth(100)
+                        .QuickStart(
+                            Html.X().Toolbar()
+                                .Items(
+                                    Html.X().Button()
+                                        .Handler("tile")
+                                        .Icon(Icon.ApplicationTileVertical)
+                                        .ToolTip("Tile windows"),
+
+                                    Html.X().Button()
+                                        .Handler("cascade")
+                                        .Icon(Icon.ApplicationCascade)
+                                        .ToolTip("Cascade windows")
+                                )
+                        )
+                        .Tray(
+                            Html.X().Toolbar()
+                                .Items(
+                                    Html.X().Button()
+                                        .ID("")
+                                        .Text("EN")
+                                        .MenuArrow(false)
+                                        .Cls("x-bold-text")
+                                        .MenuAlign("br-tr")
+                                        .MenuItem(
+                                            Html.X().CheckMenuItem()
+                                                .Group("lang")
+                                                .Text("English")
+                                                .Checked(true)
+                                                .CheckHandler("function(item, checked) {checked && App.LangButton.setText('EN');}"),
+
+                                            Html.X().CheckMenuItem()
+                                                .Group("lang")
+                                                .Text("French")
+                                                .Checked(true)
+                                                .CheckHandler("function(item, checked) {checked && App.LangButton.setText('FR');}"),
+
+                                            Html.X().MenuSeparator(),
+
+                                            Html.X().MenuItem()
+                                                .Text("Show the Language Bar")
+                                        ),
+                                    Html.X().ToolbarFill()
+                                )
+                        )
+                )
+    )
+        
+    @Html.Partial("GridWindow", myDesktop.Models.MyNewWords.GetAllMyNewWords())
+    @{
+        if (ViewBag.IsAdmin == "1")
+        {
+            @Html.Partial("NewWordsReport", myDesktop.Models.MyNewWords.GetNewWordsReport())
+        }
+    }
+
+    @{
+        if (string.IsNullOrEmpty(ViewBag.UserID) || ViewBag.UserID == "public")
+        {
+            @Html.Partial("Login")
+        }
+        else
+        {
+            @Html.Partial("WhatsNew")
+        }
+}
+
+    @Html.Partial("Exam")  
+    
+}

@@ -1,0 +1,158 @@
+﻿@model System.Collections.IEnumerable
+
+<script>
+    var onComboBoxSelect = function (combo) {
+        var store = combo.up("gridpanel").getStore();
+        store.pageSize = parseInt(combo.getValue(), 10);
+        store.reload();
+    };
+</script>
+
+<script>
+    var template = 'color:{0};';
+
+    var change = function (value, meta) {
+        meta.style = Ext.String.format(template, (value > 0) ? "green" : "red");
+        return value;
+    };
+
+    var pctChange = function (value, meta) {
+        meta.style = Ext.String.format(template, (value > 0) ? "green" : "red");
+        return value + "%";
+    };
+
+    var edit = function (editor, e) {        
+
+        if (!(e.value === e.originalValue || (Ext.isDate(e.value) && Ext.Date.isEqual(e.value, e.originalValue)))) {
+            Ext.net.DirectMethod.request({
+                url: '@(Url.Action("MyNewWordsGridEdit"))',
+                params: {
+                    id: e.record.data.ID,
+                    field: e.field,
+                    oldValue: e.originalValue,
+                    newValue: e.value,
+                    customer: e.record.data
+                    
+                }
+            });
+        }
+    };
+</script>
+
+
+@(Html.X().XTemplate()
+        .ID("BookTpl")        
+        .Html(
+            @<text>
+                 <b> &nbsp; {NewWord}: </b>  &nbsp; {Meaning} 
+            </text>)
+)
+
+@(
+
+    Html.X().DesktopModuleProxy()
+        .Module(
+            Html.X().DesktopModule()
+                .ModuleID("grid-win")                
+                .Shortcut(
+                    Html.X().DesktopShortcut()
+                        .Name("New Words")
+                        .IconCls("x-myNewWords-shortcut")
+                        .SortIndex(1)
+                )
+                .Launcher(
+                    Html.X().MenuItem()
+                        .Text("New Words")
+                        .Icon(Icon.Table)
+                )
+                .Window(
+                    Html.X().Window()
+                        .Icon(Icon.Table)
+                        .Width(740)
+                        .Height(480)
+                        .Layout(LayoutType.Fit)
+                        .Title("New Words (Double Click to Edit) - " + ViewBag.UserID)
+
+                        .BottomBarItem(
+                            Html.X().Panel()
+                            .ID("DetailPanel")
+                            .Width(1800)
+                            .Height(25)
+                            //.BodyPadding(15)
+                            .BodyStyle("background:#ffffff;")
+                            .Html("&nbsp; Will show Meaning here if you select one row.")
+                        )      // end of TopBarItem
+
+                        .Items(
+
+                            Html.X().GridPanel()
+        .Store(
+            Html.X().Store()
+                .RemotePaging(true)
+                .PageSize(15)
+                .DataSource(Model)
+                .Model(
+                    Html.X().Model()
+                        .IDProperty("ID")
+                    .Fields(
+                        new ModelField("ID", ModelFieldType.Int),
+                            new ModelField("NewWord", ModelFieldType.String),
+                            new ModelField("Meaning"),
+                            //new ModelField("CNMeaning"),
+                            new ModelField("MakeSentence"),
+                            new ModelField("CreateDate", ModelFieldType.Date),
+                            new ModelField("Memo")
+                    )
+                )
+                .ServerProxy(
+                    Html.X().AjaxProxy()
+                        .Url(Url.Action("GetMyNewWords"))          // Used for refresh data
+                )
+        )
+        .ColumnModel(
+            Html.X().RowNumbererColumn(),
+                Html.X().Column().Text("ID").DataIndex("ID").Width(50),
+                        Html.X().Column().Text("NewWord").DataIndex("NewWord").Width(100).Editor(Html.X().TextField()),
+                        Html.X().Column().Text("Meaning").DataIndex("Meaning").Flex(1).Editor(Html.X().TextField()),
+                        //Html.X().Column().Text("CNMeaning").DataIndex("CNMeaning").Flex(1),
+                        Html.X().Column().Text("MakeSentence").DataIndex("MakeSentence").Width(120).Editor(Html.X().TextField()),
+                        Html.X().DateColumn().Text("CreateDate").DataIndex("CreateDate").Width(120).Format("Y-M-d H:mm"),
+                        Html.X().Column().Text("Memo").DataIndex("Memo").Width(100).Editor(Html.X().TextField())
+        )
+
+
+            .SelectionModel(Html.X().CellSelectionModel())
+                .Plugins(
+                    Html.X().CellEditing().Listeners(ls => ls.Edit.Fn = "edit")
+                )
+
+
+        .View(Html.X().GridView().StripeRows(true))
+        .BottomBar(
+            Html.X().PagingToolbar()
+                .Items(
+                    Html.X().Label("Page size:"),
+                    Html.X().ToolbarSpacer(10),
+                    Html.X().ComboBox()
+                        .Width(80)
+                        .Items("1", "2", "5", "10", "15", "20", "25", "30", "50", "100", "200", "500", "999")
+                        .SelectedItems("15")
+                        .Listeners(l =>
+                        {
+                            l.Select.Fn = "onComboBoxSelect";
+                        })
+                )
+        //.Plugins(Html.X().ProgressBarPager())
+        )
+
+           .Listeners(ls =>
+                         ls.SelectionChange.Handler = "selected.length && App.BookTpl.overwrite(App.DetailPanel.body, selected[0].data);"
+             )     // end of grid panel, this listener used for showing detail information
+
+
+           )
+       )
+    )
+)
+
+

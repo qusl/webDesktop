@@ -1,0 +1,71 @@
+﻿
+@(
+    Html.X().DesktopModuleProxy()
+        .Module(
+            Html.X().DesktopModule()
+                .ModuleID("whatsnew-win")
+                .Shortcut(
+                    Html.X().DesktopShortcut()
+                        .Name("New Words")
+                        .IconCls("x-addNewWords-shortcut")
+                        .SortIndex(100)
+                )
+                .Window(
+                    Html.X().Window()
+                    .Icon(Icon.ReportEdit)
+                       .Title("Add New Word")
+            .Height(330)
+            .Width(520)
+            .DefaultButton("ButtonAddNewWord")
+            .Layout("fit")
+            .Items(Html.X().FormPanel()
+                .DefaultAnchor("100%")
+                .BodyPadding(5)
+                .Frame(true)
+                .Items(Html.X().TextArea()
+                    .Name("NewWord")
+                        .ID("NewWord")
+                        .EmptyText("<Type 'NewWord' Here>")
+                    .FieldLabel("New Word")
+                    .Height(25),
+
+                        Html.X().TextArea()
+                        .Name("Meaning")
+                            .EmptyText("<Type 'Meaning' Here>")
+                        .FieldLabel("Meaning")
+                            .Height(55),
+
+                            //Html.X().TextArea()
+                            //    .Name("CNMeaning")
+                            //    .EmptyText("<Type 'CNMeaning' Here>")
+                            //    .FieldLabel("Chinese Meaning")
+                            //    .Height(55),
+
+                                Html.X().TextArea()
+                                .Name("MakeSentence")
+                                .EmptyText("<Type 'MakeSentence' Here>")
+                                .FieldLabel("MakeSentence")
+                            .Height(55),
+
+                            Html.X().TextArea()
+                                .Name("IsActive")
+                            .EmptyText("<Change to 0 to delete>")
+                            .FieldLabel("IsActive")
+                                .Height(25),
+
+                                Html.X().TextArea()
+                                .Name("Memo")
+                            .EmptyText("<Type Note Here>")
+                            .FieldLabel("Note")
+                                .Height(55)
+                )
+                .Buttons(Html.X().Button()
+                    .ID("ButtonAddNewWord")
+                    .Text("Submit")
+                    .Icon(Icon.Accept)
+                    .DirectClickAction("AddNewWordAction")                       
+                   )
+                )
+            )
+      )
+)
